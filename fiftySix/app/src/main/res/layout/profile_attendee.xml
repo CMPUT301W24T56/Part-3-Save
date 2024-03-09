@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="40dp"
+    android:background="@color/colorPrimaryDark"
+    android:gravity="center">
+
+
+    <ImageButton
+        android:id="@+id/profile_image"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_gravity="center"
+        android:layout_marginVertical="45dp"
+        android:background="@color/zxing_transparent"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/profile"
+        tools:src="@tools:sample/avatars"/>
+
+    <EditText
+        android:id="@+id/profile_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
+        android:padding="15dp"
+        android:background="#EF5D86"
+        android:hint="Name:"
+        android:textColorHint="@color/white"
+        android:textColor="@color/white"
+        app:circularflow_defaultRadius="10dp"
+        />
+
+    <EditText
+        android:id="@+id/profile_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
+        android:padding="15dp"
+        android:background="#EF5D86"
+        android:hint="Email: "
+        android:inputType="textEmailAddress"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        />
+
+    <EditText
+        android:id="@+id/profile_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
+        android:padding="15dp"
+        android:background="#EF5D86"
+        android:hint="Phone No: "
+        android:inputType="phone"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        />
+
+
+    <EditText
+        android:id="@+id/profile_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
+        android:padding="15dp"
+        android:background="#EF5D86"
+        android:hint="Home: "
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="30dp"
+        android:orientation="horizontal"
+        >
+        <Button
+            android:id="@+id/profile_back"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Back"
+            android:background="@drawable/light_round_button"
+            />
+        <Space
+            android:layout_width="15dp"
+            android:layout_height="0dp"
+            />
+        <Button
+            android:id="@+id/profile_save"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Edit"
+            android:background="@drawable/light_round_button"
+            />
+    </LinearLayout>
+
+</LinearLayout>

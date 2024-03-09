@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_page_organizer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#291017"
+    android:weightSum="5">
+
+    <androidx.appcompat.widget.AppCompatButton
+
+        android:id="@+id/browseAllEvents"
+        android:layout_width="298dp"
+
+        android:layout_height="60dp"
+        android:background="@drawable/light_round_button"
+        android:fontFamily="@font/inter_medium"
+        android:text="Browse All Events"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/buttonAttendeeProfile"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="563dp"
+        android:layout_marginBottom="15dp"
+        android:layout_weight="4"
+        android:background="#FFFFFF"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.496"
+        tools:layout_editor_absoluteX="0dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/attendeeHomeRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layoutDirection="rtl"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+
+            />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/buttonAttendeeHome"
+        android:layout_width="73dp"
+        android:layout_height="81dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="320dp"
+        android:background="@drawable/transparent_background_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:srcCompat="@mipmap/ic_launcher_foreground" />
+
+    <ImageButton
+        android:id="@+id/buttonAttendeeProfile"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="320dp"
+        android:background="@drawable/transparent_background_button"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/user_ic_launcher_foreground" />
+
+    <ImageButton
+        android:id="@+id/buttonAttendeeSignInEvent"
+        android:layout_width="73dp"
+        android:layout_height="81dp"
+        android:background="@drawable/transparent_background_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/buttonAttendeeNotificationBell"
+        app:layout_constraintStart_toEndOf="@+id/buttonAttendeeHome"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:srcCompat="@mipmap/add_ic_launcher_foreground" />
+
+    <ImageButton
+        android:id="@+id/buttonAttendeeNotificationBell"
+        android:layout_width="77dp"
+        android:layout_height="63dp"
+        android:layout_marginStart="320dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/transparent_background_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.512"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:srcCompat="@mipmap/notif_ic_launcher_foreground" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

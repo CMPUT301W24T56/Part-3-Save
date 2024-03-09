@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="3dp"
+    app:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linear_layout"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/code_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Code Name"
+            android:textSize="22sp" />
+
+        <RelativeLayout
+            android:id="@+id/expandable_layout"
+            android:layout_width="match_parent"
+            android:layout_height="500dp">
+
+
+            <TextView
+                android:id="@+id/version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="date"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/apiLevel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:padding="16dp"
+                android:text="api Level"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/version"
+                android:padding="16dp"
+                android:text="Description: "
+                android:textAlignment="textStart"
+                android:textSize="18sp" />
+
+            <TextView
+                android:gravity="left|center"
+                android:id="@+id/currentAttendees"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/description"
+                android:padding="16dp"
+                android:text="Attendees at Event:"
+
+                android:textSize="18sp" />
+
+            <TextView
+                android:gravity="left|center"
+                android:id="@+id/attendeeCapacity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/currentAttendees"
+                android:padding="16dp"
+                android:text="Event Capacity:"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/event_poster_image"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:padding="5dp"
+                android:layout_above="@id/uploadQRFromScan"
+                android:layout_below="@id/attendeeCapacity"
+                android:adjustViewBounds="true"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:scaleType="centerCrop"
+                tools:src="@tools:sample/avatars" />
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/uploadQRFromScan"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/dark_round_button"
+                android:fontFamily="@font/inter_medium"
+                android:text="Edit Event"
+                android:textColor="@color/colorPrimaryLight"
+                android:textSize="20sp" />
+
+
+        </RelativeLayout>
+
+
+
+
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

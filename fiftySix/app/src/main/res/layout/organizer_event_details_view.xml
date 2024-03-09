@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/create_event_details"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:weightSum="5"
+    android:orientation="vertical">
+
+
+    <ImageButton
+        android:id="@+id/buttonBackCreateEvent"
+        android:layout_width="93dp"
+        android:layout_height="83dp"
+        android:layout_marginEnd="30dp"
+        android:background="@drawable/transparent_background_button"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/back_ic_launcher_foreground" />
+
+    <LinearLayout
+        android:layout_gravity="center_vertical"
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="0dp"
+        android:layout_weight="4"
+        android:background="#FFFFFF"
+        android:orientation="vertical">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="2000dp"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/textViewTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="25dp"
+                    android:fontFamily="@font/inter"
+                    android:text="Event Details"
+                    android:textSize="28sp"/>
+
+
+
+                    <EditText
+                        android:id="@+id/eventNameEditText"
+                        android:layout_width="289dp"
+                        android:layout_height="58dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/dark_round_button"
+                        android:inputType="textAutoCorrect"
+                        android:paddingLeft="15dp"
+                        android:text="Event Name"
+                        android:textColor="@color/colorPrimaryLight"
+                        tools:text="Event Name" />
+
+                    <EditText
+                        android:id="@+id/eventDateEditText"
+                        android:layout_width="289dp"
+                        android:layout_height="58dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/dark_round_button"
+                        android:inputType="textAutoCorrect"
+                        android:paddingLeft="15dp"
+                        android:text="Date"
+                        android:textColor="@color/colorPrimaryLight"
+                        tools:text="Date" />
+
+                    <EditText
+                        android:id="@+id/eventAddressEditText"
+                        android:layout_width="289dp"
+                        android:layout_height="58dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/dark_round_button"
+                        android:inputType="textAutoCorrect"
+                        android:paddingLeft="15dp"
+                        android:text="Address"
+                        android:textColor="@color/colorPrimaryLight"
+                        tools:text="Address" />
+
+                    <EditText
+                        android:id="@+id/eventDetailsEditText"
+                        android:layout_width="289dp"
+                        android:layout_height="58dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/dark_round_button"
+                        android:inputType="textAutoCorrect"
+                        android:paddingLeft="15dp"
+                        android:text="Event Details"
+                        android:textColor="@color/colorPrimaryLight"
+                        tools:text="Event Details" />
+
+                    <Switch
+                        android:id="@+id/switchAttendeeLimit"
+                        android:layout_width="289dp"
+                        android:layout_height="58dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/dark_round_button"
+                        android:padding="16dp"
+                        android:paddingLeft="15dp"
+                        android:text="Set Attendee Limit"
+                        android:textColor="@color/colorPrimaryLight" />
+
+                    <EditText
+                        android:id="@+id/editTextNumberAttendeeLimit"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:ems="10"
+                        android:hint="Enter limit number"
+                        android:inputType="number"
+                        android:padding="16dp"
+                        android:visibility="gone" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/buttonUploadPoster"
+                    android:layout_width="300dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/dark_round_button"
+                    android:text="Upload Poster"
+                    android:textSize="20sp"
+                    android:textColor="@color/colorPrimaryLight" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/generatePromoQR"
+                    android:layout_width="300dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/dark_round_button"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="Create PROMO QR Code"
+                    android:textColor="@color/colorPrimaryLight"
+                    android:textSize="20sp" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/reuseCheckinQR"
+                    android:layout_width="300dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/dark_round_button"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="Reuse check-in QR Code"
+                    android:textColor="@color/colorPrimaryLight"
+                    android:textSize="20sp" />
+
+
+            </LinearLayout>
+
+
+
+
+        </ScrollView>
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_gravity="center_horizontal"
+
+        android:id="@+id/buttonCreateEvent"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:background="@drawable/light_round_button"
+        android:fontFamily="@font/inter_medium"
+        android:text="Create Event"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="52dp"/>
+
+</LinearLayout>

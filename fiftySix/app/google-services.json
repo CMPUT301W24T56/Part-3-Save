@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "252971972142",
+    "firebase_url": "https://fiftysix-a4bcf-default-rtdb.firebaseio.com",
+    "project_id": "fiftysix-a4bcf",
+    "storage_bucket": "fiftysix-a4bcf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:252971972142:android:bdf063130ceca16cfc51bf",
+        "android_client_info": {
+          "package_name": "com.example.fiftysix"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDz58inkW0UK0yAby2rRzCudG0WNP1e-gs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:252971972142:android:9e0353e9c3e347b4fc51bf",
+        "android_client_info": {
+          "package_name": "com.example.testingdb"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDz58inkW0UK0yAby2rRzCudG0WNP1e-gs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

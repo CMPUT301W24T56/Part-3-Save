@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/orgListTextEventName"
+        android:layout_width="match_parent"
+        android:layout_height="53dp"
+        android:fontFamily="@font/inter_bold"
+        android:text="Event Name Here"
+        android:textAlignment="textStart"
+        android:textSize="28sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="20dp" />
+
+    <TextView
+        android:id="@+id/orgListTextViewLocation"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:fontFamily="@font/inter"
+        android:text="Location"
+        android:textSize="18sp"
+        tools:layout_editor_absoluteX="60dp"
+        tools:layout_editor_absoluteY="73dp"
+        android:paddingLeft="25dp"/>
+
+    <TextView
+        android:id="@+id/orgListTextViewDate"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:fontFamily="@font/inter"
+        android:text="Date"
+        android:textSize="18sp"
+        tools:layout_editor_absoluteX="60dp"
+        tools:layout_editor_absoluteY="109dp"
+        android:paddingLeft="25dp"/>
+</androidx.appcompat.widget.LinearLayoutCompat>

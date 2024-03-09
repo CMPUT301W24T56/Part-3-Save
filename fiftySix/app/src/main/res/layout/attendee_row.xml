@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="3dp"
+    app:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linear_layout"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/code_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Code Name"
+            android:textSize="22sp" />
+
+        <RelativeLayout
+            android:id="@+id/expandable_layout"
+            android:layout_width="match_parent"
+            android:layout_height="299dp">
+
+
+            <TextView
+                android:id="@+id/version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="Version"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/apiLevel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:padding="16dp"
+                android:text="api Level"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/version"
+                android:padding="16dp"
+                android:text="Description TextView"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/descriptionEvent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/description"
+                android:padding="16dp"
+                android:text="Description TextView"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/attendeeCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/descriptionEvent"
+                android:padding="16dp"
+                android:text="Attendee Count"
+                android:textSize="18sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/uploadQRFromScan"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_below="@+id/attendeeCount"
+                android:layout_marginTop="7dp"
+                android:layout_marginBottom="252dp"
+                android:background="@drawable/dark_round_button"
+                android:fontFamily="@font/inter_medium"
+                android:text="Delete Event"
+                android:textColor="@color/colorPrimaryLight"
+                android:textSize="20sp" />
+
+
+        </RelativeLayout>
+
+
+
+
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
