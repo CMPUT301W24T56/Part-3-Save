@@ -221,14 +221,14 @@ public class AttendeeMainActivity extends AppCompatActivity {
                                         @Override
                                         public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
 
-                                            Log.e(TAG, "onEvent: 3" );
-                                            String imageUrl = value.getString("image");
+                                            if (value != null) {
+                                                String imageUrl = value.getString("image");
 
 
+                                                myEventDataList.add(new Event(eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, imageUrl));
 
-                                            myEventDataList.add(new Event(eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, imageUrl));
-
-                                            attendeeMyEventAdapter.notifyDataSetChanged();
+                                                attendeeMyEventAdapter.notifyDataSetChanged();
+                                            }
                                         }
                                     });
 
@@ -267,15 +267,13 @@ public class AttendeeMainActivity extends AppCompatActivity {
 
                             @Override
                             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                                
+                                if (value != null) {
 
-                                Log.e(TAG, "onEvent: 3" );
-                                String imageUrl = value.getString("image");
-
-
-
-                                allEventDataList.add(new Event(eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, imageUrl));
-
-                                attendeeAllEventAdapter.notifyDataSetChanged();
+                                    String imageUrl = value.getString("image");
+                                    allEventDataList.add(new Event(eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, imageUrl));
+                                    attendeeAllEventAdapter.notifyDataSetChanged();
+                                }
                             }
                         });
                     }

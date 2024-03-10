@@ -194,15 +194,12 @@ public class OrganizerMainActivity extends AppCompatActivity {
 
                                         @Override
                                         public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                                            Log.e(TAG, "onEvent: 3" );
-                                            String imageUrl = value.getString("image");
-
-
-
-                                            eventDataList.add(new Event(eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, imageUrl));
-
-                                            organizerEventAdapter.notifyDataSetChanged();
+                                            if (value != null) {
+                                                Log.e(TAG, "onEvent: 3");
+                                                String imageUrl = value.getString("image");
+                                                eventDataList.add(new Event(eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, imageUrl));
+                                                organizerEventAdapter.notifyDataSetChanged();
+                                            }
                                         }
                                     });
 
