@@ -1,5 +1,8 @@
 package com.example.fiftysix;
 
+import static android.content.ContentValues.TAG;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +10,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ImageView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 
@@ -34,13 +42,23 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventVH> {
     @Override
     public void onBindViewHolder(@NonNull EventVH holder, int position) {
 
+
+
+
+
+
+
         Event event = eventList.get(position);
         holder.codeName.setText(event.getEventName());
         holder.versionTxt.setText(event.getLocation());
         holder.apiLevelTxt.setText(event.getDate());
         holder.descriptionTxt.setText(event.getDetails());
 
+
+
+
         String imageUrl = event.getPosterURL();
+
 
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Picasso.get()

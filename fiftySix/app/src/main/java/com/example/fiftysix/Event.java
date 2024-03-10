@@ -25,6 +25,7 @@ public class Event {
     private String eventID;
     private String organizerID;
     private String posterURL;
+    private String posterID;
     private Attendee[] attendeeList;
     private Attendee[] rsvpAttendeeList;
     private String checkInQRCodeID; // Check if should be auto generated upon creating event
@@ -61,12 +62,14 @@ public class Event {
         this.ref = db.collection("Events");
         this.eventID = FirebaseDatabase.getInstance().getReference("Events").push().getKey();
         this.date = date;
+        this.posterID = FirebaseDatabase.getInstance().getReference("images").push().getKey();
 
         // Generates New check-in QR code and stores the qrcode ID.
         this.checkInQRCode = new CheckInQRCode(eventID, mContext);
         this.checkInQRCodeID = this.checkInQRCode.getQRCodeID();
         addEventToDataBase();
     }
+
 
 
 
@@ -81,7 +84,11 @@ public class Event {
         this.attendeeLimit = attendeeLimit;
         this.posterURL = posterURL;
         this.expandable = false;
+        //this.posterID = FirebaseDatabase.getInstance().getReference("images").push().getKey();
     }
+
+
+
 
 
     // This constructor is used when the organizer WANTS to reuse a check-in QR code.
@@ -95,6 +102,7 @@ public class Event {
         this.mContext = mContext;
         this.checkInQRCodeID = checkInQRCodeID;
         this.db = FirebaseFirestore.getInstance();
+        this.posterID = FirebaseDatabase.getInstance().getReference("images").push().getKey();
 
         // TODO: check the the event that we are reusing the qrcode from is still active.
 
@@ -106,6 +114,8 @@ public class Event {
 
 
     // ________________________________METHODS_____________________________________
+
+    public String getPosterID(){ return posterID;}
 
     public String getEventID() {
         return eventID;
@@ -129,6 +139,7 @@ public class Event {
         eventData.put("date",this.date);
         eventData.put("location",this.location);
         eventData.put("attendee",this.attendeeCount);
+        eventData.put("posterID",this.posterID);
 
 
         // These are optional so we need to check if they are null
@@ -156,32 +167,6 @@ public class Event {
 
 
 
-    // Returns event strring of the event data selected from the database
-    private String queryEventData(String key){
-        //https://firebase.google.com/docs/firestore/query-data/get-data#java_4
-        // Use this to fetch specific document.
-        queryReturnString = "";
-        DocumentReference docRef = db.collection("Events").document(eventID);
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        queryReturnString = document.get(key).toString();
-                        Log.d(TAG, "DocumentSnapshot data: " + queryReturnString);
-
-                    } else {
-                        Log.d(TAG, "No such document");
-                    }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-                }
-            }
-        });
-        return queryReturnString;
-
-    }
 
 
 

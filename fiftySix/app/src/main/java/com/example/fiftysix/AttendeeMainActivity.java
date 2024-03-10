@@ -215,12 +215,23 @@ public class AttendeeMainActivity extends AppCompatActivity {
                                     String inDate = value.getString("date");
                                     String location = value.getString("location");
                                     String details = value.getString("details");
+                                    String posterID = value.getString("posterID");
+                                    db.collection("Images").document(posterID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
 
-                                    //if ((String.valueOf(inAttendeeCount) == null) || (String.valueOf(inAttendeeLimit) == null)){
-                                    myEventDataList.add(new Event(eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, imageUrl));
-                                    //}
+                                        @Override
+                                        public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
 
-                                    attendeeMyEventAdapter.notifyDataSetChanged();
+                                            Log.e(TAG, "onEvent: 3" );
+                                            String imageUrl = value.getString("image");
+
+
+
+                                            myEventDataList.add(new Event(eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, imageUrl));
+
+                                            attendeeMyEventAdapter.notifyDataSetChanged();
+                                        }
+                                    });
+
                                 }
                             }
                         });
@@ -251,9 +262,22 @@ public class AttendeeMainActivity extends AppCompatActivity {
                         String inDate = doc.getString("date");
                         String location = doc.getString("location");
                         String details = doc.getString("details");
-                        allEventDataList.add(new Event(eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, imageUrl));
+                        String posterID = doc.getString("posterID");
+                        db.collection("Images").document(posterID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
 
-                        attendeeAllEventAdapter.notifyDataSetChanged();
+                            @Override
+                            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+
+                                Log.e(TAG, "onEvent: 3" );
+                                String imageUrl = value.getString("image");
+
+
+
+                                allEventDataList.add(new Event(eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, imageUrl));
+
+                                attendeeAllEventAdapter.notifyDataSetChanged();
+                            }
+                        });
                     }
 
 

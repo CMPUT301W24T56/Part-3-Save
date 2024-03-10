@@ -36,6 +36,10 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -53,6 +57,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class OrganizerMainActivity extends AppCompatActivity {
 
@@ -135,7 +140,14 @@ public class OrganizerMainActivity extends AppCompatActivity {
         // Creates Poster Object
         posterHandler = new Poster();
 
+
+
+
+
         // Adds events from database to the organizers home screen. Will only show events created by the organizer
+
+
+
         orgEventRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot querySnapshots,
@@ -145,39 +157,64 @@ public class OrganizerMainActivity extends AppCompatActivity {
                     return;
                 }
                 if (querySnapshots != null) {
-                    eventDataList.clear();
-                    for (QueryDocumentSnapshot doc : querySnapshots) {
-                        String eventID = doc.getId();
 
+                    Log.e(TAG, "onEvent: 1" );
+
+                    eventDataList.clear();
+
+                    for (QueryDocumentSnapshot doc : querySnapshots) {
+
+
+                        String eventID = doc.getId();
                         Log.d("EVENTNAME", "hello "+ eventID);
+
+
+
+
                         eventRef.document(eventID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
                             @Override
                             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+
+                                Log.e(TAG, "onEvent: 2" );
+
                                 if (error != null) {
                                     Log.e("Firestore", error.toString());
                                     return;
                                 }
                                 if (value != null && value.exists()) {
                                     String eventName = value.getString("eventName");
-                                    String imageUrl = value.getString("posterURL");
+                                    String posterID = value.getString("posterID");
                                     Integer inAttendeeLimit = value.getLong("attendeeLimit").intValue();
                                     Integer inAttendeeCount = value.getLong("attendeeCount").intValue();
                                     String inDate = value.getString("date");
                                     String location = value.getString("location");
                                     String details = value.getString("details");
+                                    // Gets poster image from database
+                                    db.collection("Images").document(posterID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
 
-                                    eventDataList.add(new Event(eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, imageUrl));
-                                    organizerEventAdapter.notifyDataSetChanged();
+                                        @Override
+                                        public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+
+                                            Log.e(TAG, "onEvent: 3" );
+                                            String imageUrl = value.getString("image");
+
+
+
+                                            eventDataList.add(new Event(eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, imageUrl));
+
+                                            organizerEventAdapter.notifyDataSetChanged();
+                                        }
+                                    });
 
                                 }
                             }
                         });
+
                     }
                 }
             }
         });
-        // Creates Organizer Object
-        organizer = new Organizer(context);
+
 
         galleryLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -214,29 +251,38 @@ public class OrganizerMainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+
                 String eventTitle = eventTitleEditText.getText().toString();
                 String eventDate = eventDateEditText.getText().toString();
                 String eventAddress = eventAddressEditText.getText().toString();
                 String eventDetails = eventDetailsEditText.getText().toString();
 
 
+                String posterID = organizer.createEventNewQRCode( eventDetails, eventAddress, attendeeLimit, eventTitle, eventDate);
 
-                String eventID = organizer.createEventNewQRCode(eventDetails, eventAddress, attendeeLimit, eventTitle, eventDate);
-                posterHandler.uploadImageAndStoreReference(selectedImageUri, eventTitle, "Event", new Poster.PosterUploadCallback() {
+
+
+
+                posterHandler.uploadImageAndStoreReference(selectedImageUri, posterID, "Event", new Poster.PosterUploadCallback() {
                     @Override
                     public void onUploadSuccess(String imageUrl) {
-                        posterHandler.storeImageinEVENT(imageUrl, eventID);
-                        organizerEventAdapter.notifyDataSetChanged();
+
+                       // posterHandler.storeImageinEVENT(imageUrl, eventID);
+
+
                     }
 
                     @Override
                     public void onUploadFailure(Exception e) {
-                        Log.e(TAG, "Failed to upload image for event: " + eventID, e);
+                        Log.e(TAG, "Failed to upload image for event: " + posterID, e);
                         // Handle failure, e.g., show a toast or alert dialog
                     }
                 });
 
-                organizerEventAdapter.notifyDataSetChanged();
+
+
+
+
                 previousView(v);
             }
         });
@@ -277,7 +323,6 @@ public class OrganizerMainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showImageSourceDialog();
-                organizerEventAdapter.notifyDataSetChanged();
             }
         });
 

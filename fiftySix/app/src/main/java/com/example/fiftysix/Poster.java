@@ -22,13 +22,13 @@ public class Poster {
     }
 
     // Method to upload the image to Firebase Storage and store its reference in Firestore
-    public void uploadImageAndStoreReference(Uri imageUri, String posterName, String eventType, PosterUploadCallback callback) {
+    public void uploadImageAndStoreReference(Uri imageUri, String posterID, String eventType, PosterUploadCallback callback) {
         if (imageUri != null) {
-            StorageReference fileReference = FirebaseStorage.getInstance().getReference("images/Posters/" + posterName + ".jpg");
+            StorageReference fileReference = FirebaseStorage.getInstance().getReference("images/Posters/" + posterID + ".jpg");
             fileReference.putFile(imageUri)
                     .addOnSuccessListener(taskSnapshot -> taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(downloadUri -> {
                         Log.d(TAG, "Image Upload Successful. Image Uri: " + downloadUri.toString());
-                        storeImageReferenceInIMAGES(downloadUri.toString(), posterName, eventType);
+                        storeImageReferenceInIMAGES(downloadUri.toString(), posterID, eventType);
                         callback.onUploadSuccess(downloadUri.toString());
                     }).addOnFailureListener(e -> {
                         Log.e(TAG, "URL retrieval failed.", e);
@@ -40,7 +40,7 @@ public class Poster {
                     });
         } else {
             Log.d(TAG, "No Image Selected! Using default poster.");
-            storeImageReferenceInIMAGES(DEFAULT_IMAGE_URL, posterName, eventType);
+            storeImageReferenceInIMAGES(DEFAULT_IMAGE_URL, posterID, eventType);
             callback.onUploadSuccess(DEFAULT_IMAGE_URL);
         }
     }
@@ -61,16 +61,5 @@ public class Poster {
                 });
     }
 
-    public void storeImageinEVENT(String imageUrl, String eventID) {
-        Map<String, Object> eventData = new HashMap<>();
-        eventData.put("posterURL", imageUrl);
 
-        db.collection("Events").document(eventID).update(eventData)
-                .addOnSuccessListener(aVoid -> {
-                    Log.d(TAG, "Events collection update successful for URL");
-                })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "Events collection update successful for URL");
-                });
-    }
 }

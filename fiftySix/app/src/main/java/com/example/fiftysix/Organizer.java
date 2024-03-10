@@ -74,8 +74,10 @@ public class Organizer {
     public String createEventNewQRCode( String details, String location, Integer attendeeLimit, String eventName, String date){
         Event event = new Event(this.organizerID, details, location, attendeeLimit, eventName, date, mContext);
         addEventToOrganizerDataBase(event.getEventID());
-        return event.getEventID();
+        return event.getPosterID();
     }
+
+
 
     // Method creates new event in database and reuses check-in QR code
     public void createEventReuseQRCode(String details, String location, Integer attendeeLimit, String eventName, String oldQRID){
@@ -83,48 +85,12 @@ public class Organizer {
         addEventToOrganizerDataBase(event.getEventID());
     }
 
-    // https://stackoverflow.com/questions/50035752/how-to-get-list-of-documents-from-a-collection-in-firestore-android
-    // Returns a list of all event data to display on the organizers home page, (event name, date, location)
-    public void getEventIDList() {
 
-        this.myEvents = new ArrayList<>();
-
-        //ArrayList<String> arrayList= new ArrayList<String>();
-
-        db.collection("Users").document(organizerID).collection("EventsByOrganizer")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-
-
-
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                addEventID(document.getId().toString());
-
-                            }
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-
-    }
 
     // kind of like a call back used for get event IDs
     private void addEventID(String eventID){
         this.myEvents.add(eventID);
     }
-
-
-
-
-
-
-
-
 
 
 
