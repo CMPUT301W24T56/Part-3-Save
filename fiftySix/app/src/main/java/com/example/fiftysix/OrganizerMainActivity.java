@@ -133,7 +133,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
         //eventDataList.add(new Event("Event Name", "Event Location", "Event Date"));
 
         // Sets home page recyler view event data
-        OrganizerEventAdapter organizerEventAdapter = new OrganizerEventAdapter(eventDataList);
+        OrganizerEventAdapter organizerEventAdapter = new OrganizerEventAdapter(eventDataList,this);
         recyclerView.setAdapter(organizerEventAdapter);
         recyclerView.setHasFixedSize(false);
 

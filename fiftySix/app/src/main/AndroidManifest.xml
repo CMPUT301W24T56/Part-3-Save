@@ -49,6 +49,9 @@
             android:name=".OrganizerHomeActivity"
             android:exported="false" />
         <activity
+            android:name=".send_notification"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

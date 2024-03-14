@@ -29,6 +29,20 @@
             android:layout_height="500dp">
 
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/notify"
+                android:layout_width="211dp"
+                android:layout_height="65dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="190dp"
+                android:layout_marginBottom="7dp"
+                android:background="@drawable/dark_round_button"
+                android:fontFamily="@font/inter_medium"
+                android:text="Send Notification"
+                android:textColor="@color/colorPrimaryLight"
+                android:textSize="20sp" />
+
             <TextView
                 android:id="@+id/version"
                 android:layout_width="wrap_content"
@@ -94,12 +108,12 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/uploadQRFromScan"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
+                android:layout_width="179dp"
+                android:layout_height="61dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginStart="0dp"
-                android:layout_marginBottom="6dp"
+                android:layout_marginBottom="9dp"
                 android:background="@drawable/dark_round_button"
                 android:fontFamily="@font/inter_medium"
                 android:text="Edit Event"
