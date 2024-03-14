@@ -5,10 +5,20 @@ import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+import android.content.Context;
+import android.content.Intent;
+import android.provider.MediaStore;
+import android.provider.Settings;
+
+import androidx.test.espresso.action.ViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -63,7 +73,7 @@ public class OrganizerUiTest {
         onView(withId(R.id.buttonAddEvent)).perform(click());
 
         // click on the set attendee limit button and
-        //onView(withId(R.id.switchUploadPosterLimit)).perform(click());
+        onView(withId(R.id.switchAttendeeLimit)).perform(click());
 
     }
 

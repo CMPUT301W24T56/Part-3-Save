@@ -39,7 +39,6 @@ public class Event {
     private String date;
     private Boolean expandable;
 
-
     private CheckInQRCode checkInQRCode;
     private FirebaseFirestore db;
     private CollectionReference ref;
@@ -61,7 +60,6 @@ public class Event {
         this.mContext = mContext;
         this.db = FirebaseFirestore.getInstance();
         this.ref = db.collection("Events");
-
         this.eventID = FirebaseDatabase.getInstance().getReference("Events").push().getKey();
         this.date = date;
         this.posterID = FirebaseDatabase.getInstance().getReference("images").push().getKey();
@@ -123,12 +121,11 @@ public class Event {
         return eventID;
     }
 
-    public void eventAddPoster(){
-
-    };
-
     // Adds event data to database in firestore.
     private void addEventToDataBase(){
+
+
+
         Map<String,Object> eventData = new HashMap<>();
         eventData.put("attendeeCount",0);
         eventData.put("attendeeLimit",this.attendeeLimit);
@@ -143,8 +140,6 @@ public class Event {
         eventData.put("location",this.location);
         eventData.put("attendee",this.attendeeCount);
         eventData.put("posterID",this.posterID);
-        eventData.put("posterURL",this.posterID);
-        eventData.put("hasPoster","no");
 
 
         // These are optional so we need to check if they are null
@@ -152,29 +147,6 @@ public class Event {
         //eventData.put("poster",this.posterID);
         //eventData.put("promoQRCode",this.promoQRCodeID);
         //eventData.put("map",this.map); for after part 3
-
-
-        //
-
-        //db.collection("Users").document(organizerID).collection("EventsByOrganizer").document(eventID).set(eventData);
-
-        /*
-
-        db.collection("Users").document(this.organizerID).collection("EventsByOrganizer").document(eventID)
-                .set(eventData)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("Firestore", "Event Data successfully written!");
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("Firestore", "ERROR: Event Data failed to upload.");
-                    }
-                });
-
-         */
 
 
         this.ref
@@ -246,7 +218,4 @@ public class Event {
     public void setExpandable(Boolean expandable) {
         this.expandable = expandable;
     }
-
-
-
 }

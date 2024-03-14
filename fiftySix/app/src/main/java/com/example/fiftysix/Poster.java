@@ -45,30 +45,20 @@ public class Poster {
         }
     }
 
-
-
-
     // Method to store the image reference in Firestore
-    private void storeImageReferenceInIMAGES(String imageUrl, String posterID, String eventType) {
+    private void storeImageReferenceInIMAGES(String imageUrl, String posterName, String eventType) {
         Map<String, Object> posterData = new HashMap<>();
         posterData.put("image", imageUrl);
-        posterData.put("poster", posterID);
+        posterData.put("poster", posterName);
         posterData.put("type", eventType);
 
-        db.collection("Images").document(posterID).set(posterData)
+        db.collection("Images").document(posterName).set(posterData)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d(TAG, "Firestore update successful for poster: " + posterID);
+                    Log.d(TAG, "Firestore update successful for poster: " + posterName);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "Firestore update failed for poster: " + posterID, e);
+                    Log.e(TAG, "Firestore update failed for poster: " + posterName, e);
                 });
-    }
-
-
-    public void storeImageinEVENT(String organizerID, String imageUrl, String eventID){
-        db.collection("Events").document(eventID).update("posterURL",imageUrl);
-
-        //db.collection("Users").document(organizerID).collection("EventsByOrganizer").document(eventID).update("posterURL",imageUrl, "hasPoster", "yes");
     }
 
 

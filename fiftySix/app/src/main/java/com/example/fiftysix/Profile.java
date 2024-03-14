@@ -57,6 +57,10 @@ public class Profile {
         //this.imageID = FirebaseDatabase.getInstance().getReference("images").push().getKey();
 
 
+
+
+
+
         if(profileInDataBase() != true){
             //db.collection("Users").document(userID).collection("profileImages").document(imageUrl).set(userData);
             addProfileToDatabase();
@@ -64,6 +68,10 @@ public class Profile {
         }
 
 
+    }
+
+    public void deleteProfilePic(String userID){
+        userRef.document(userID).update("profileImageURL", "https://ui-avatars.com/api/?rounded=true&name="+ this.name +"&background=random&size=512");
     }
 
     public void editProfile(String userID, String name, String email, String phoneNumber, String bio){
@@ -83,11 +91,11 @@ public class Profile {
         }
     }
 
-    //public void setProfileURL(String imageURL){
-        //this.imageUrl = imageURL;
-       // userRef.document(userID).update("profileImageURL", this.imageUrl);
-        //return;
-    //}
+    public void setProfileURL(String imageURL){
+        this.imageUrl = imageURL;
+        userRef.document(userID).update("profileImageURL", this.imageUrl);
+        return;
+    }
 
 
     public String getProfileURL(){
