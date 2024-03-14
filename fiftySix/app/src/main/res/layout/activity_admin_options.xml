@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/home_page_organizer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#291017"
+    android:weightSum="5">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="563dp"
+        android:layout_weight="4"
+        android:background="#FFFFFF"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.496">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/browseEvents"
+                android:layout_width="300dp"
+                android:layout_height="60dp"
+                android:layout_marginBottom="200dp"
+                android:background="@drawable/round_button_shape"
+                android:fontFamily="@font/inter_medium"
+                android:text="Browse Events"
+                android:textColor="@color/textLight"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/browseProfiles"
+                android:layout_width="300dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="200dp"
+                android:background="@drawable/round_button_shape"
+                android:fontFamily="@font/inter_medium"
+                android:text="Browse Profiles"
+                android:textColor="@color/textLight"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/browseImages"
+                android:layout_width="300dp"
+                android:layout_height="60dp"
+                android:layout_marginBottom="200dp"
+                android:layout_marginTop="200dp"
+                android:background="@drawable/round_button_shape"
+                android:fontFamily="@font/inter_medium"
+                android:text="Browse Images"
+                android:textColor="@color/textLight"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

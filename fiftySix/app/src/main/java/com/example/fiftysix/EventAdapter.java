@@ -1,8 +1,5 @@
 package com.example.fiftysix;
 
-import static android.content.ContentValues.TAG;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +7,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ImageView;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 
@@ -26,27 +18,23 @@ import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventVH> {
 
-    List<Event> eventList;
+    private List<Event> eventList;
+    private boolean isExpandableOnClick;
 
-    public EventAdapter(ArrayList<Event> eventList) {
+    public EventAdapter(ArrayList<Event> eventList, boolean isExpandableOnClick) {
         this.eventList = eventList;
+        this.isExpandableOnClick = isExpandableOnClick;
     }
 
     @NonNull
     @Override
     public EventVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.organizer_row, parent, false);
-        return new EventVH(view);
+        return new EventVH(view, isExpandableOnClick);
     }
 
     @Override
     public void onBindViewHolder(@NonNull EventVH holder, int position) {
-
-
-
-
-
-
 
         Event event = eventList.get(position);
         holder.codeName.setText(event.getEventName());
@@ -54,22 +42,21 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventVH> {
         holder.apiLevelTxt.setText(event.getDate());
         holder.descriptionTxt.setText(event.getDetails());
 
-
-
-
         String imageUrl = event.getPosterURL();
-
 
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Picasso.get()
                     .load(imageUrl)
                     .fit()
-                    .into(holder.eventImage); // Your ImageView
+                    .into(holder.eventImage);
         }
 
-        boolean isExpandable = eventList.get(position).getExpandable();
-        holder.expandableLayout.setVisibility(isExpandable ? View.VISIBLE : View.GONE);
-
+        if (!isExpandableOnClick) {
+            holder.expandableLayout.setVisibility(View.GONE);
+        } else {
+            boolean isExpandable = eventList.get(position).getExpandable();
+            holder.expandableLayout.setVisibility(isExpandable ? View.VISIBLE : View.GONE);
+        }
     }
 
     @Override
@@ -84,7 +71,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventVH> {
         RelativeLayout expandableLayout;
         ImageView eventImage;
 
-        public EventVH(@NonNull View itemView) {
+        public EventVH(@NonNull View itemView, boolean isExpandableOnClick) {
             super(itemView);
 
             codeName = itemView.findViewById(R.id.code_name);
@@ -97,18 +84,13 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventVH> {
 
             eventImage = itemView.findViewById(R.id.event_poster_image);
 
-            linearLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
+            if (isExpandableOnClick) {
+                linearLayout.setOnClickListener(v -> {
                     Event event = eventList.get(getAdapterPosition());
                     event.setExpandable(!event.getExpandable());
                     notifyItemChanged(getAdapterPosition());
-                }
-            });
-
-
+                });
+            }
         }
     }
-
 }

@@ -49,6 +49,8 @@
             android:name=".OrganizerHomeActivity"
             android:exported="false" />
         <activity
+            android:name=".AdminBrowseEvents"/>
+        <activity
             android:name=".send_notification"
             android:exported="false" />
         <activity
