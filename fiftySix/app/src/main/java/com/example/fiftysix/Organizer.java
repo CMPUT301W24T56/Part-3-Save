@@ -71,11 +71,11 @@ public class Organizer {
 
 
     // Method creates new event in database and generates a new check-in QR code
-    public String createEventNewQRCode( String details, String location, Integer attendeeLimit, String eventName, String date){
-        Event event = new Event(this.organizerID, details, location, attendeeLimit, eventName, date, mContext);
-        addEventToOrganizerDataBase(event.getEventID());
-        return event.getPosterID();
-    }
+   // public String createEventNewQRCode( String details, String location, Integer attendeeLimit, String eventName, String date){
+    //    Event event = new Event(this.organizerID, details, location, attendeeLimit, eventName, date, mContext);
+     //   addEventToOrganizerDataBase(event.getEventID());
+     //   return event.getPosterID();
+    //}
 
 
 
@@ -117,7 +117,7 @@ public class Organizer {
 
 
     // Adds event data to database in firestore, this is nested inside the organizer.
-    private void addEventToOrganizerDataBase(String eventIDKey){
+    public void addEventToOrganizerDataBase(String eventIDKey){
         Map<String,Object> orgEventsData = new HashMap<>();
         orgEventsData.put("testing","temp");
         this.ref.document(this.organizerID).collection("EventsByOrganizer").document(eventIDKey).set(orgEventsData);

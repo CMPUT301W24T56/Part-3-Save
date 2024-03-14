@@ -30,16 +30,13 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -57,7 +54,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 public class OrganizerMainActivity extends AppCompatActivity {
 
@@ -97,6 +93,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
     private EditText eventAddressEditText;
     private EditText eventDetailsEditText;
     private Switch switchAttendeeLimit;
+    private Switch switchUploadPosterLimit;
     private ImageView eventPosterImage;
     // private Button buttonUploadPoster;
     // Buttons on Upload QR page
@@ -137,8 +134,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
         recyclerView.setAdapter(organizerEventAdapter);
         recyclerView.setHasFixedSize(false);
 
-        // Creates Poster Object
-        posterHandler = new Poster();
+
 
 
 
@@ -147,7 +143,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
         // Adds events from database to the organizers home screen. Will only show events created by the organizer
 
 
-
+        /*
         orgEventRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot querySnapshots,
@@ -211,6 +207,58 @@ public class OrganizerMainActivity extends AppCompatActivity {
                 }
             }
         });
+        */
+
+
+        String organizerID = organizer.getOrganizerID();
+
+        eventRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.e("Firestore", error.toString());
+                    return;
+                }
+                if (value != null){
+                    eventRef.whereEqualTo("organizer", organizerID).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot querySnapshot) {
+                            if (querySnapshot != null) {
+                                eventDataList.clear();
+                                for (QueryDocumentSnapshot doc : querySnapshot) {
+                                    Log.e(TAG, "onEvent: organizer " + doc.getString("organizer").toString() + " organizerID = " + organizerID);
+                                    String eventOrganizer = doc.getString("organizer").toString();
+                                    Log.e(TAG, "Inside if: organizer " + doc.getString("organizer"));
+                                    String eventID = doc.getId();
+                                    String eventName = doc.getString("eventName");
+                                    String posterID = doc.getString("posterID");
+                                    Integer inAttendeeLimit = doc.getLong("attendeeLimit").intValue();
+                                    Integer inAttendeeCount = doc.getLong("attendeeCount").intValue();
+                                    String inDate = doc.getString("date");
+                                    String location = doc.getString("location");
+                                    String details = doc.getString("details");
+                                    String posterURL = doc.getString("posterURL");
+                                    Log.d("EVENTNAME", "hello " + eventID);
+                                    eventDataList.add(new Event(eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, posterURL));
+                                    organizerEventAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
 
 
         galleryLauncher = registerForActivityResult(
@@ -242,51 +290,37 @@ public class OrganizerMainActivity extends AppCompatActivity {
         });
 
 
-
         // Create event pages
         createEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 String eventTitle = eventTitleEditText.getText().toString();
                 String eventDate = eventDateEditText.getText().toString();
                 String eventAddress = eventAddressEditText.getText().toString();
                 String eventDetails = eventDetailsEditText.getText().toString();
+                Event newEvent = new Event(organizerID, eventDetails, eventAddress, attendeeLimit, eventTitle, eventDate, context);
 
+                String posterID = newEvent.getPosterID();
+                String eventID = newEvent.getEventID();
 
-                String posterID = organizer.createEventNewQRCode( eventDetails, eventAddress, attendeeLimit, eventTitle, eventDate);
-
-
-
+                // Creates Poster Object
+                posterHandler = new Poster();
+                organizer.addEventToOrganizerDataBase(eventID);
 
                 posterHandler.uploadImageAndStoreReference(selectedImageUri, posterID, "Event", new Poster.PosterUploadCallback() {
                     @Override
                     public void onUploadSuccess(String imageUrl) {
-
-                       // posterHandler.storeImageinEVENT(imageUrl, eventID);
-
-
+                        posterHandler.storeImageinEVENT(organizer.getOrganizerID(), imageUrl, eventID);
                     }
-
                     @Override
                     public void onUploadFailure(Exception e) {
                         Log.e(TAG, "Failed to upload image for event: " + posterID, e);
                         // Handle failure, e.g., show a toast or alert dialog
                     }
                 });
-
-
-
-
-
                 previousView(v);
             }
         });
-
-
-
-
 
 
         // Opens viewe to reuse android a qrcode for attendee check in.
@@ -316,15 +350,15 @@ public class OrganizerMainActivity extends AppCompatActivity {
         });
 
         Button buttonUploadPoster = findViewById(R.id.buttonUploadPoster);
+
+
+
         buttonUploadPoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showImageSourceDialog();
             }
         });
-
-
-
     }
 
 
@@ -362,6 +396,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
         });
         builder.show();
     }
+
 
 
 
@@ -443,6 +478,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
             switchAttendeeLimit = findViewById(R.id.switchAttendeeLimit);
             eventPosterImage = findViewById(R.id.event_poster_image);
 
+
         }
 
         private void setEditText() {
@@ -510,6 +546,10 @@ public class OrganizerMainActivity extends AppCompatActivity {
                 }
             });
         }
+
+
+
+
 
 
         // "youtube - Implement Barcode QR Scanner in Android studio barcode reader | Cambo Tutorial" - youtube channel = Cambo Tutorial

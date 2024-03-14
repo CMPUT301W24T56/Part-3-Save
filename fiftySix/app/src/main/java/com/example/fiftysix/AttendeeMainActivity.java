@@ -216,6 +216,12 @@ public class AttendeeMainActivity extends AppCompatActivity {
                                     String location = value.getString("location");
                                     String details = value.getString("details");
                                     String posterID = value.getString("posterID");
+                                    String imageURL = value.getString("posterID");
+
+
+                                    myEventDataList.add(new Event(eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, imageUrl));
+
+                                    attendeeMyEventAdapter.notifyDataSetChanged();
                                     db.collection("Images").document(posterID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
 
                                         @Override
@@ -231,7 +237,6 @@ public class AttendeeMainActivity extends AppCompatActivity {
                                             }
                                         }
                                     });
-
                                 }
                             }
                         });
@@ -263,11 +268,12 @@ public class AttendeeMainActivity extends AppCompatActivity {
                         String location = doc.getString("location");
                         String details = doc.getString("details");
                         String posterID = doc.getString("posterID");
+
                         db.collection("Images").document(posterID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
 
                             @Override
                             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                                
+
                                 if (value != null) {
 
                                     String imageUrl = value.getString("image");
@@ -283,6 +289,9 @@ public class AttendeeMainActivity extends AppCompatActivity {
 
             }
         });
+
+
+
 
 
 
@@ -359,7 +368,7 @@ public class AttendeeMainActivity extends AppCompatActivity {
 
 
 
-        // Displays all events
+        // Displays profile
         db.collection("Users").document(attendee.getDeviceId()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -418,6 +427,8 @@ public class AttendeeMainActivity extends AppCompatActivity {
                 }
         );
 
+        posterHandler = new Profile(attendee.getDeviceId());
+
 
         profileSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -432,27 +443,35 @@ public class AttendeeMainActivity extends AppCompatActivity {
                 Profile profile = new Profile(attendee.getDeviceId());
                 profile.editProfile(attendee.getDeviceId() , name, email, phone, bio);
 
+                if (selectedImageUri != null) {
+                    posterHandler.uploadImageAndStoreReference(selectedImageUri, new Profile.ProfileUploadCallback() {
+                        @Override
+                        public void onUploadSuccess(String imageUrl) {
 
-                posterHandler.uploadImageAndStoreReference(selectedImageUri, new Profile.ProfileUploadCallback() {
-                    @Override
-                    public void onUploadSuccess(String imageUrl) {
+                            // Stores image URL
+                            posterHandler.storeImageInUser(imageUrl);
+                            Log.d(TAG, "IMAGE URL PROFILE = " + imageUrl);
 
-                        // Stores image URL
-                        posterHandler.storeImageInUser(imageUrl);
-                        Log.d(TAG, "IMAGE URL PROFILE = " + imageUrl);
+                            Picasso.get()
+                                    .load(imageUrl)
+                                    .fit().transform(new CropCircleTransformation())
+                                    .into(profileImage);
+                            //organizerEventAdapter.notifyDataSetChanged();
+                        }
 
-                        Picasso.get()
-                                .load(imageUrl)
-                                .fit().transform(new CropCircleTransformation())
-                                .into(profileImage);
-                        //organizerEventAdapter.notifyDataSetChanged();
-                    }
-                    @Override
-                    public void onUploadFailure(Exception e) {
-                        Log.d(TAG, "IMAGE URL PROFILE = Failed" );
+                        @Override
+                        public void onUploadFailure(Exception e) {
+                            Log.d(TAG, "IMAGE URL PROFILE = Failed");
 
-                    }
-                });
+                        }
+                    });
+                }
+
+
+
+
+
+
                 Picasso.get()
                         .load(profile.getProfileURL())
                         .fit().transform(new CropCircleTransformation())
@@ -464,7 +483,7 @@ public class AttendeeMainActivity extends AppCompatActivity {
         });
 
 
-        posterHandler = new Profile(attendee.getDeviceId());
+
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
