@@ -143,6 +143,9 @@ public class Attendee {
 
     // Adds attendee to database if they are not already in it.
     private void addAttendeeToDatabase(){
+        Map<String,Object> attendeeUpcomingEventsData = new HashMap<>();
+        attendeeUpcomingEventsData.put("eventDate","temp");
+
         Map<String,Object> attendeeData = new HashMap<>();
         attendeeData.put("type",this.userType);
         attendeeData.put("name","unknown");
@@ -165,6 +168,8 @@ public class Attendee {
                         Log.d("Firestore", "ERROR: Attendee Data failed to upload.");
                     }
                 });
+
+        this.ref.document(this.attendeeID).collection("UpcomingEvents").document("temp").set(attendeeUpcomingEventsData);
     }
 
     // Checks if the organizer is already in the database, If not in the database the organizer is added to it.

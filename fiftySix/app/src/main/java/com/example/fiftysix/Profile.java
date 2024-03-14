@@ -70,6 +70,10 @@ public class Profile {
 
     }
 
+    public void deleteProfilePic(String userID){
+        userRef.document(userID).update("profileImageURL", "https://ui-avatars.com/api/?rounded=true&name="+ this.name +"&background=random&size=512");
+    }
+
     public void editProfile(String userID, String name, String email, String phoneNumber, String bio){
         this.userID = userID;
         this.name = name;

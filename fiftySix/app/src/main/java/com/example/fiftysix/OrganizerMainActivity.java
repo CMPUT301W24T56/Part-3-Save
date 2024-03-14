@@ -38,6 +38,7 @@ import android.widget.ViewFlipper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
@@ -70,8 +71,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
 
     // Views
     private ViewFlipper viewFlipper;
-    private Organizer organizer;
-    private String reUseQRID;
+
 
     private int attendeeLimit = Integer.MAX_VALUE;
     private ActivityResultLauncher<Intent> galleryLauncher;
@@ -97,11 +97,17 @@ public class OrganizerMainActivity extends AppCompatActivity {
     private EditText eventAddressEditText;
     private EditText eventDetailsEditText;
     private Switch switchAttendeeLimit;
-    private ImageView eventPosterImage;
-    // private Button buttonUploadPoster;
+
+
     // Buttons on Upload QR page
     private Button uploadQRFromScan;
     private ArrayList<Event> eventDataList;
+
+    //Organizer Data
+    private Organizer organizer;
+    private String reUseQRID;
+    private String organizerID;
+    private OrganizerEventAdapter organizerEventAdapter;
 
 
 
@@ -116,6 +122,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
 
         // Creates Organizer Object
         organizer = new Organizer(context);
+        organizerID = organizer.getOrganizerID();
 
         // Firebase
         db = FirebaseFirestore.getInstance();
@@ -133,7 +140,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
         //eventDataList.add(new Event("Event Name", "Event Location", "Event Date"));
 
         // Sets home page recyler view event data
-        OrganizerEventAdapter organizerEventAdapter = new OrganizerEventAdapter(eventDataList,this);
+        organizerEventAdapter = new OrganizerEventAdapter(eventDataList, this);
         recyclerView.setAdapter(organizerEventAdapter);
         recyclerView.setHasFixedSize(false);
 
@@ -146,71 +153,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
 
         // Adds events from database to the organizers home screen. Will only show events created by the organizer
 
-
-
-        orgEventRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot querySnapshots,
-                                @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.e("Firestore", error.toString());
-                    return;
-                }
-                if (querySnapshots != null) {
-
-                    Log.e(TAG, "onEvent: 1" );
-
-                    eventDataList.clear();
-
-                    for (QueryDocumentSnapshot doc : querySnapshots) {
-
-
-                        String eventID = doc.getId();
-                        Log.d("EVENTNAME", "hello "+ eventID);
-
-
-
-
-                        eventRef.document(eventID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                            @Override
-                            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                                Log.e(TAG, "onEvent: 2" );
-
-                                if (error != null) {
-                                    Log.e("Firestore", error.toString());
-                                    return;
-                                }
-                                if (value != null && value.exists()) {
-                                    String eventName = value.getString("eventName");
-                                    String posterID = value.getString("posterID");
-                                    Integer inAttendeeLimit = value.getLong("attendeeLimit").intValue();
-                                    Integer inAttendeeCount = value.getLong("attendeeCount").intValue();
-                                    String inDate = value.getString("date");
-                                    String location = value.getString("location");
-                                    String details = value.getString("details");
-                                    // Gets poster image from database
-                                    db.collection("Images").document(posterID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-
-                                        @Override
-                                        public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                                            if (value != null) {
-                                                Log.e(TAG, "onEvent: 3");
-                                                String imageUrl = value.getString("image");
-                                                eventDataList.add(new Event(eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, imageUrl));
-                                                organizerEventAdapter.notifyDataSetChanged();
-                                            }
-                                        }
-                                    });
-
-                                }
-                            }
-                        });
-
-                    }
-                }
-            }
-        });
+        loadOrganizerEvents();
 
 
         galleryLauncher = registerForActivityResult(
@@ -237,6 +180,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
         addEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                selectedImageUri = null;
                 nextView(v);
             }
         });
@@ -247,39 +191,20 @@ public class OrganizerMainActivity extends AppCompatActivity {
         createEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 String eventTitle = eventTitleEditText.getText().toString();
                 String eventDate = eventDateEditText.getText().toString();
                 String eventAddress = eventAddressEditText.getText().toString();
                 String eventDetails = eventDetailsEditText.getText().toString();
-
-
                 String posterID = organizer.createEventNewQRCode( eventDetails, eventAddress, attendeeLimit, eventTitle, eventDate);
-
-
-
-
-                posterHandler.uploadImageAndStoreReference(selectedImageUri, posterID, "Event", new Poster.PosterUploadCallback() {
-                    @Override
-                    public void onUploadSuccess(String imageUrl) {
-
-                       // posterHandler.storeImageinEVENT(imageUrl, eventID);
-
-
-                    }
-
-                    @Override
-                    public void onUploadFailure(Exception e) {
-                        Log.e(TAG, "Failed to upload image for event: " + posterID, e);
-                        // Handle failure, e.g., show a toast or alert dialog
-                    }
-                });
-
-
-
-
-
+                    posterHandler.uploadImageAndStoreReference(selectedImageUri, posterID, "Event", new Poster.PosterUploadCallback() {
+                        @Override
+                        public void onUploadSuccess(String imageUrl) {}
+                        @Override
+                        public void onUploadFailure(Exception e) {
+                            Log.e(TAG, "Failed to upload image for event: " + posterID, e);
+                            // Handle failure, e.g., show a toast or alert dialog
+                        }
+                    });
                 previousView(v);
             }
         });
@@ -441,7 +366,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
             ImageButton eventDetailsBack = (ImageButton) findViewById(R.id.buttonBackUploadQR);
             uploadQRFromScan = (Button) findViewById(R.id.uploadQRFromScan);
             switchAttendeeLimit = findViewById(R.id.switchAttendeeLimit);
-            eventPosterImage = findViewById(R.id.event_poster_image);
+            //eventPosterImage = findViewById(R.id.event_poster_image);
 
         }
 
@@ -545,6 +470,58 @@ public class OrganizerMainActivity extends AppCompatActivity {
             }
 
         });
+
+
+        private void loadOrganizerEvents(){
+            eventRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                    if (error != null) {
+                        Log.e("Firestore", error.toString());
+                        return;
+                    }
+                    if (value != null){
+                        eventRef.whereEqualTo("organizer", organizerID).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot querySnapshot) {
+                                if (querySnapshot != null) {
+                                    eventDataList.clear();
+                                    for (QueryDocumentSnapshot doc : querySnapshot) {
+                                        Log.e(TAG, "onEvent: organizer " + doc.getString("organizer").toString() + " organizerID = " + organizerID);
+                                        String eventOrganizer = doc.getString("organizer").toString();
+                                        Log.e(TAG, "Inside if: organizer " + doc.getString("organizer"));
+                                        String eventID = doc.getId();
+                                        String eventName = doc.getString("eventName");
+                                        String posterID = doc.getString("posterID");
+                                        Integer inAttendeeLimit = doc.getLong("attendeeLimit").intValue();
+                                        Integer inAttendeeCount = doc.getLong("attendeeCount").intValue();
+                                        String inDate = doc.getString("date");
+                                        String location = doc.getString("location");
+                                        String details = doc.getString("details");
+
+                                        Log.d("EVENTNAME", "hello " + eventID);
+
+
+                                        db.collection("Images").whereEqualTo("poster", posterID).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onSuccess(QuerySnapshot querySnapshotImage) {
+                                                for (QueryDocumentSnapshot doc : querySnapshotImage){
+                                                    String posterURL = doc.getString("image");
+                                                    eventDataList.add(new Event(eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, posterURL));
+                                                    organizerEventAdapter.notifyDataSetChanged();
+                                                }
+
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+
+        }
 
     }
 
