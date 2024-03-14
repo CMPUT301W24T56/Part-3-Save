@@ -140,7 +140,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
         //eventDataList.add(new Event("Event Name", "Event Location", "Event Date"));
 
         // Sets home page recyler view event data
-        organizerEventAdapter = new OrganizerEventAdapter(eventDataList);
+        organizerEventAdapter = new OrganizerEventAdapter(eventDataList, this);
         recyclerView.setAdapter(organizerEventAdapter);
         recyclerView.setHasFixedSize(false);
 
@@ -154,25 +154,6 @@ public class OrganizerMainActivity extends AppCompatActivity {
         // Adds events from database to the organizers home screen. Will only show events created by the organizer
 
         loadOrganizerEvents();
-
-
-
-
-
-        String organizerID = organizer.getOrganizerID();
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         galleryLauncher = registerForActivityResult(
@@ -210,18 +191,11 @@ public class OrganizerMainActivity extends AppCompatActivity {
         createEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 String eventTitle = eventTitleEditText.getText().toString();
                 String eventDate = eventDateEditText.getText().toString();
                 String eventAddress = eventAddressEditText.getText().toString();
                 String eventDetails = eventDetailsEditText.getText().toString();
-
-
                 String posterID = organizer.createEventNewQRCode( eventDetails, eventAddress, attendeeLimit, eventTitle, eventDate);
-
-
-
                     posterHandler.uploadImageAndStoreReference(selectedImageUri, posterID, "Event", new Poster.PosterUploadCallback() {
                         @Override
                         public void onUploadSuccess(String imageUrl) {}
@@ -231,13 +205,6 @@ public class OrganizerMainActivity extends AppCompatActivity {
                             // Handle failure, e.g., show a toast or alert dialog
                         }
                     });
-
-
-
-
-
-
-
                 previousView(v);
             }
         });
