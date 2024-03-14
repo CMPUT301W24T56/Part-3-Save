@@ -1,8 +1,12 @@
 package com.example.fiftysix;
 
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,10 +23,13 @@ import java.util.List;
 public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAdapter.EventVH> {
 
     List<Event> eventList;
+    private Context context;
 
-    public OrganizerEventAdapter(ArrayList<Event> eventList) {
+    public OrganizerEventAdapter(ArrayList<Event> eventList, Context context) {
         this.eventList = eventList;
+        this.context = context;
     }
+
 
     @NonNull
     @Override
@@ -77,6 +84,7 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
         LinearLayout linearLayout;
         RelativeLayout expandableLayout;
         ImageView eventImage;
+        Button send_notification;
 
         public EventVH(@NonNull View itemView) {
             super(itemView);
@@ -92,7 +100,7 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
             expandableLayout = itemView.findViewById(R.id.expandable_layout);
 
             eventImage = itemView.findViewById(R.id.event_poster_image);
-
+            send_notification = itemView.findViewById(R.id.notify);
 
             linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -104,7 +112,14 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
                 }
             });
 
-
+            send_notification.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, send_notification.class); // Assuming SendNotificationActivity is your activity name
+                    Log.d("TAG", "onClick: working now ");
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 
