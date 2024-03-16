@@ -38,6 +38,7 @@ import android.widget.ViewFlipper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
@@ -61,18 +62,24 @@ import java.util.concurrent.TimeUnit;
 
 public class OrganizerMainActivity extends AppCompatActivity {
 
+    // Firebase
     private FirebaseFirestore db;
     private CollectionReference orgEventRef;
     private CollectionReference eventRef;
     private CollectionReference imageRef;
+
+
+    // Layouts & views
+    private ViewFlipper viewFlipper;
     private RecyclerView recyclerView;
 
 
-    // Views
-    private ViewFlipper viewFlipper;
+    //Organizer Data
     private Organizer organizer;
     private String reUseQRID;
-
+    private String organizerID;
+    private OrganizerEventAdapter organizerEventAdapter;
+    private ArrayList<Event> eventDataList;
     private int attendeeLimit = Integer.MAX_VALUE;
     private ActivityResultLauncher<Intent> galleryLauncher;
     private ActivityResultLauncher<Uri> cameraLauncher;
@@ -88,6 +95,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
     private ImageButton orgNotificationButton;
     private ImageButton orgHomeButton;
 
+
     // Buttons on Create event page
     private Button createEvent;
     private ImageButton eventDetailsBack;
@@ -97,11 +105,11 @@ public class OrganizerMainActivity extends AppCompatActivity {
     private EditText eventAddressEditText;
     private EditText eventDetailsEditText;
     private Switch switchAttendeeLimit;
-    private ImageView eventPosterImage;
-    // private Button buttonUploadPoster;
+
+
     // Buttons on Upload QR page
     private Button uploadQRFromScan;
-    private ArrayList<Event> eventDataList;
+
 
 
 
@@ -116,6 +124,10 @@ public class OrganizerMainActivity extends AppCompatActivity {
 
         // Creates Organizer Object
         organizer = new Organizer(context);
+        organizerID = organizer.getOrganizerID();
+
+
+
 
         // Firebase
         db = FirebaseFirestore.getInstance();
@@ -133,7 +145,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
         //eventDataList.add(new Event("Event Name", "Event Location", "Event Date"));
 
         // Sets home page recyler view event data
-        OrganizerEventAdapter organizerEventAdapter = new OrganizerEventAdapter(eventDataList,this);
+        organizerEventAdapter = new OrganizerEventAdapter(eventDataList, this);
         recyclerView.setAdapter(organizerEventAdapter);
         recyclerView.setHasFixedSize(false);
 
@@ -146,71 +158,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
 
         // Adds events from database to the organizers home screen. Will only show events created by the organizer
 
-
-
-        orgEventRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot querySnapshots,
-                                @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.e("Firestore", error.toString());
-                    return;
-                }
-                if (querySnapshots != null) {
-
-                    Log.e(TAG, "onEvent: 1" );
-
-                    eventDataList.clear();
-
-                    for (QueryDocumentSnapshot doc : querySnapshots) {
-
-
-                        String eventID = doc.getId();
-                        Log.d("EVENTNAME", "hello "+ eventID);
-
-
-
-
-                        eventRef.document(eventID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                            @Override
-                            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                                Log.e(TAG, "onEvent: 2" );
-
-                                if (error != null) {
-                                    Log.e("Firestore", error.toString());
-                                    return;
-                                }
-                                if (value != null && value.exists()) {
-                                    String eventName = value.getString("eventName");
-                                    String posterID = value.getString("posterID");
-                                    Integer inAttendeeLimit = value.getLong("attendeeLimit").intValue();
-                                    Integer inAttendeeCount = value.getLong("attendeeCount").intValue();
-                                    String inDate = value.getString("date");
-                                    String location = value.getString("location");
-                                    String details = value.getString("details");
-                                    // Gets poster image from database
-                                    db.collection("Images").document(posterID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-
-                                        @Override
-                                        public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                                            if (value != null) {
-                                                Log.e(TAG, "onEvent: 3");
-                                                String imageUrl = value.getString("image");
-                                                eventDataList.add(new Event(eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, imageUrl));
-                                                organizerEventAdapter.notifyDataSetChanged();
-                                            }
-                                        }
-                                    });
-
-                                }
-                            }
-                        });
-
-                    }
-                }
-            }
-        });
+        loadOrganizerEvents();
 
 
         galleryLauncher = registerForActivityResult(
@@ -237,91 +185,16 @@ public class OrganizerMainActivity extends AppCompatActivity {
         addEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                selectedImageUri = null;
                 nextView(v);
             }
         });
 
 
+        initializeCreateEvent();
 
         // Create event pages
-        createEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-
-                String eventTitle = eventTitleEditText.getText().toString();
-                String eventDate = eventDateEditText.getText().toString();
-                String eventAddress = eventAddressEditText.getText().toString();
-                String eventDetails = eventDetailsEditText.getText().toString();
-
-
-                String posterID = organizer.createEventNewQRCode( eventDetails, eventAddress, attendeeLimit, eventTitle, eventDate);
-
-
-
-
-                posterHandler.uploadImageAndStoreReference(selectedImageUri, posterID, "Event", new Poster.PosterUploadCallback() {
-                    @Override
-                    public void onUploadSuccess(String imageUrl) {
-
-                       // posterHandler.storeImageinEVENT(imageUrl, eventID);
-
-
-                    }
-
-                    @Override
-                    public void onUploadFailure(Exception e) {
-                        Log.e(TAG, "Failed to upload image for event: " + posterID, e);
-                        // Handle failure, e.g., show a toast or alert dialog
-                    }
-                });
-
-
-
-
-
-                previousView(v);
-            }
-        });
-
-
-
-
-
-
-        // Opens viewe to reuse android a qrcode for attendee check in.
-        reuseCheckInQR.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                nextView(v);
-            }
-        });
-
-        // Switchs layout to previous when user presses back in event details page
-        eventDetailsBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                previousView(v);
-            }
-        });
-
-        // TODO: fix QR reuse method createEventReuseQRCode
-        uploadQRFromScan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scanCode();
-
-                previousView(v);
-            }
-        });
-
-        Button buttonUploadPoster = findViewById(R.id.buttonUploadPoster);
-        buttonUploadPoster.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showImageSourceDialog();
-            }
-        });
 
 
 
@@ -334,7 +207,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
 
 
 
-    private void showImageSourceDialog() {
+        private void showImageSourceDialog() {
         CharSequence[] items = {"Upload from Gallery", "Upload from Camera"};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Upload Poster");
@@ -368,12 +241,12 @@ public class OrganizerMainActivity extends AppCompatActivity {
 
 
 
-    private void requestCameraPermission() {
+        private void requestCameraPermission() {
         ActivityCompat.requestPermissions(OrganizerMainActivity.this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        @Override
+        public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CAMERA_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -386,7 +259,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
         }
     }
 
-    private void openCamera() {
+        private void openCamera() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             File photoFile = null;
@@ -405,7 +278,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
     }
 
 
-    private File createImageFile() throws IOException {
+        private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
@@ -416,13 +289,13 @@ public class OrganizerMainActivity extends AppCompatActivity {
     }
 
 
-    public void previousView(View v){
+        public void previousView(View v){
         //viewFlipper.setInAnimation(this, android.R.anim.slide_in_left);
         //viewFlipper.setOutAnimation(this, android.R.anim.slide_out_right);
         viewFlipper.showPrevious();
     }
 
-    private void nextView(View v){
+        private void nextView(View v){
         //viewFlipper.setInAnimation(this, R.anim.slide_in_right);
         //viewFlipper.setOutAnimation(this, R.anim.slide_out_left);
         viewFlipper.showNext();
@@ -441,9 +314,10 @@ public class OrganizerMainActivity extends AppCompatActivity {
             ImageButton eventDetailsBack = (ImageButton) findViewById(R.id.buttonBackUploadQR);
             uploadQRFromScan = (Button) findViewById(R.id.uploadQRFromScan);
             switchAttendeeLimit = findViewById(R.id.switchAttendeeLimit);
-            eventPosterImage = findViewById(R.id.event_poster_image);
+            //eventPosterImage = findViewById(R.id.event_poster_image);
 
         }
+
 
         private void setEditText() {
             eventTitleEditText = (EditText) findViewById(R.id.eventNameEditText);
@@ -546,7 +420,114 @@ public class OrganizerMainActivity extends AppCompatActivity {
 
         });
 
-    }
+
+        private void loadOrganizerEvents(){
+            eventRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                    if (error != null) {
+                        Log.e("Firestore", error.toString());
+                        return;
+                    }
+                    if (value != null){
+                        eventRef.whereEqualTo("organizer", organizerID).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot querySnapshot) {
+                                if (querySnapshot != null) {
+                                    eventDataList.clear();
+                                    for (QueryDocumentSnapshot doc : querySnapshot) {
+                                        Log.e(TAG, "onEvent: organizer " + doc.getString("organizer").toString() + " organizerID = " + organizerID);
+                                        String eventOrganizer = doc.getString("organizer").toString();
+                                        Log.e(TAG, "Inside if: organizer " + doc.getString("organizer"));
+                                        String eventID = doc.getId();
+                                        String eventName = doc.getString("eventName");
+                                        String posterID = doc.getString("posterID");
+                                        Integer inAttendeeLimit = doc.getLong("attendeeLimit").intValue();
+                                        Integer inAttendeeCount = doc.getLong("attendeeCount").intValue();
+                                        String inDate = doc.getString("date");
+                                        String location = doc.getString("location");
+                                        String details = doc.getString("details");
+
+                                        Log.d("EVENTNAME", "hello " + eventID);
+
+
+                                        db.collection("Images").whereEqualTo("poster", posterID).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onSuccess(QuerySnapshot querySnapshotImage) {
+                                                for (QueryDocumentSnapshot doc : querySnapshotImage){
+                                                    String posterURL = doc.getString("image");
+                                                    eventDataList.add(new Event(eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, posterURL));
+                                                    organizerEventAdapter.notifyDataSetChanged();
+                                                }
+
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+
+        }
+
+        
+        private void initializeCreateEvent(){
+            createEvent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String eventTitle = eventTitleEditText.getText().toString();
+                    String eventDate = eventDateEditText.getText().toString();
+                    String eventAddress = eventAddressEditText.getText().toString();
+                    String eventDetails = eventDetailsEditText.getText().toString();
+                    String posterID = organizer.createEventNewQRCode( eventDetails, eventAddress, attendeeLimit, eventTitle, eventDate);
+                    posterHandler.uploadImageAndStoreReference(selectedImageUri, posterID, "Event", new Poster.PosterUploadCallback() {
+                        @Override
+                        public void onUploadSuccess(String imageUrl) {}
+                        @Override
+                        public void onUploadFailure(Exception e) {
+                            Log.e(TAG, "Failed to upload image for event: " + posterID, e);
+                            // Handle failure, e.g., show a toast or alert dialog
+                        }
+                    });
+                    previousView(v);
+                }
+            });
+            reuseCheckInQR.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    nextView(v);
+                }
+            });
+
+            // Switchs layout to previous when user presses back in event details page
+            eventDetailsBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    previousView(v);
+                }
+            });
+
+            // TODO: fix QR reuse method createEventReuseQRCode
+            uploadQRFromScan.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    scanCode();
+
+                    previousView(v);
+                }
+            });
+
+            Button buttonUploadPoster = findViewById(R.id.buttonUploadPoster);
+            buttonUploadPoster.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showImageSourceDialog();
+                }
+            });
+        }
+}
 
 
 

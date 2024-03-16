@@ -52,7 +52,7 @@ public class Poster {
         posterData.put("poster", posterName);
         posterData.put("type", eventType);
 
-        db.collection("Images").document(posterName).set(posterData)
+        db.collection("PosterImages").document(posterName).set(posterData)
                 .addOnSuccessListener(aVoid -> {
                     Log.d(TAG, "Firestore update successful for poster: " + posterName);
                 })
