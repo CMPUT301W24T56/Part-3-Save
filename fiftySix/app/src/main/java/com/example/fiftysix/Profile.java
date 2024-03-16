@@ -52,20 +52,11 @@ public class Profile {
         this.db = FirebaseFirestore.getInstance();
         this.userRef = db.collection("Users");
         this.profileRef = db.collection("Profiles");
-        this.profileID = FirebaseDatabase.getInstance().getReference("Profiles").push().getKey();
         this.imageUrl = ("https://ui-avatars.com/api/?rounded=true&name=NA&background=random&size=512");
-        //this.imageID = FirebaseDatabase.getInstance().getReference("images").push().getKey();
-
-
-
-
-
-
-        if(profileInDataBase() != true){
-            //db.collection("Users").document(userID).collection("profileImages").document(imageUrl).set(userData);
+        this.profileID = profileID;
+        //if(profileInDataBase() != true){
             addProfileToDatabase();
-
-        }
+       // }
 
 
     }
@@ -85,9 +76,16 @@ public class Profile {
         userRef.document(userID).update("email", email);
         userRef.document(userID).update("bio", bio);
 
+
+        profileRef.document(userID).update("name", name);
+        profileRef.document(userID).update("phone", phoneNumber);
+        profileRef.document(userID).update("email", email);
+        profileRef.document(userID).update("bio", bio);
+
         if (this.imageUrl == "https://ui-avatars.com/api/?rounded=true&name=NA&background=random&size=512"){
             this.imageUrl = "https://ui-avatars.com/api/?rounded=true&name="+ name +"&background=random&size=512";
             userRef.document(userID).update("profileImageURL", this.imageUrl);
+            profileRef.document(userID).update("profileImageURL", this.imageUrl);
         }
     }
 
@@ -113,17 +111,17 @@ public class Profile {
 
     private void addProfileToDatabase(){
         Map<String,Object> profileData = new HashMap<>();
-        profileData.put("userID",userID);
-        profileData.put("name",name);
-        profileData.put("email",email);
-        profileData.put("phoneNumber",phoneNumber);
-        profileData.put("bio",bio);
+        profileData.put("userID","unknown");
+        profileData.put("name","unknown");
+        profileData.put("email","unknown");
+        profileData.put("phone","unknown");
+        profileData.put("bio","unknown");
 
 
 
         // Adds profile to Profiles collection
-        this.profileRef
-                .document(profileID)
+        db.collection("Profiles")
+                .document(this.userID)
                 .set(profileData)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -136,25 +134,6 @@ public class Profile {
                         Log.d("Firestore", "ERROR: Profile Data failed to upload.");
                     }
                 });
-
-
-        userRef.document(userID).update("name", name);
-        userRef.document(userID).update("phone", phoneNumber);
-        userRef.document(userID).update("email", email);
-        userRef.document(userID).update("bio", bio);
-
-        //String imageUrl = ("https://ui-avatars.com/api/?rounded=true&name="+ name +"&background=random&size=512");
-
-        userRef.document(userID).update("profileImageURL", imageUrl);
-        storeImageInUser(imageUrl);
-
-        //Use this to display the image
-        //Picasso.get()
-                //.load(imageUrl)
-                //.fit()
-                //.into(holder.eventImage); // Your ImageView
-
-        //this.ref.document(this.organizerID).collection("EventsByOrganizer").document(eventIDKey).set(orgEventsData);
     }
 
 
@@ -205,9 +184,7 @@ public class Profile {
         imageData.put("profileID", profileID);
         imageData.put("userID", userID);
         imageData.put("type", "profilePicture");
-
-
-        db.collection("Images").document(imageID).set(imageData)
+        db.collection("ProfileImages").document(imageID).set(imageData)
                 .addOnSuccessListener(aVoid -> {
                     Log.d(TAG, "Firestore update successful for profile image user: " + userID);
                 })
@@ -228,8 +205,6 @@ public class Profile {
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Events collection update failure for URL");
                 });
-
-       // db.collection("Users").document(userID).collection("profileImages").document(imageUrl).set(userData);
     }
 
 

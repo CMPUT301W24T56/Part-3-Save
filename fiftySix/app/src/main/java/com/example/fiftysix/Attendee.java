@@ -63,6 +63,7 @@ public class Attendee {
     private CollectionReference ref;
     private String userType = "attendee";
     private String eventID;
+    //private String profileID;
 
     private Profile profile; // TODO: create and store attendee profile
 
@@ -75,6 +76,7 @@ public class Attendee {
         this.attendeeID = getDeviceId();
         this.db = FirebaseFirestore.getInstance();
         this.ref = db.collection("Users");
+
 
         // Adds organizer to data base if the organizer doesn't already exist
         attendeeExists();
@@ -153,6 +155,9 @@ public class Attendee {
         attendeeData.put("email","unknown");
         attendeeData.put("bio","unknown");
         attendeeData.put("profileImageURL","unknown");
+        attendeeData.put("profileID", "unknown");
+
+        new Profile(attendeeID);
 
         this.ref
                 .document(this.attendeeID)
@@ -169,7 +174,7 @@ public class Attendee {
                     }
                 });
 
-        this.ref.document(this.attendeeID).collection("UpcomingEvents").document("temp").set(attendeeUpcomingEventsData);
+        //this.ref.document(this.attendeeID).collection("UpcomingEvents").document("temp").set(attendeeUpcomingEventsData);
     }
 
     // Checks if the organizer is already in the database, If not in the database the organizer is added to it.
@@ -177,19 +182,26 @@ public class Attendee {
     // https://stackoverflow.com/questions/53332471/checking-if-a-document-exists-in-a-firestore-collection
     private void attendeeExists(){
         FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-        DocumentReference docIdRef = rootRef.collection("Users").document(this.attendeeID);
+        DocumentReference docIdRef = rootRef.collection("Users").document(attendeeID);
         docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
+                        rootRef.collection("Users").document(attendeeID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                if (documentSnapshot != null){
+                                    //profileID = documentSnapshot.getString("profileID");
+                                }
+                            }
+                        });
                         Log.d(TAG, "Attendee already exists!");
-                        //organizerID = "thisOrganizerAlreadyExists";
-                        //addOrganizerToDatabase();
 
                     } else {
                         Log.d(TAG, "Attendee does not already exist!");
+                        //profileID = FirebaseDatabase.getInstance().getReference("Profiles").push().getKey();
                         addAttendeeToDatabase();
                     }
                 } else {
@@ -203,7 +215,5 @@ public class Attendee {
 
 
 
-    public String getUserType() {
-        return userType;
-    }
+
 }
