@@ -8,6 +8,7 @@
     android:weightSum="5">
 
     <LinearLayout
+        android:id="@+id/linearLayoutAdminImages"
         android:layout_width="match_parent"
         android:layout_height="563dp"
         android:layout_weight="4"
@@ -22,13 +23,13 @@
             android:layout_height="match_parent">
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/browseEvents"
+                android:id="@+id/btnProfileImages"
                 android:layout_width="300dp"
                 android:layout_height="60dp"
-                android:layout_marginBottom="200dp"
+                android:layout_marginBottom="100dp"
                 android:background="@drawable/round_button_shape"
                 android:fontFamily="@font/inter_medium"
-                android:text="Browse Events"
+                android:text="Profile Images"
                 android:textColor="@color/textLight"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -36,30 +37,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/browseProfiles"
-                android:layout_width="300dp"
-                android:layout_height="60dp"
-                android:layout_marginTop="200dp"
-                android:background="@drawable/round_button_shape"
-                android:fontFamily="@font/inter_medium"
-                android:text="Browse Profiles"
-                android:textColor="@color/textLight"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/browseImages"
+                android:id="@+id/btnPosterImages"
                 android:layout_width="300dp"
                 android:layout_height="60dp"
-                android:layout_marginBottom="200dp"
-                android:layout_marginTop="200dp"
+                android:layout_marginTop="100dp"
                 android:background="@drawable/round_button_shape"
                 android:fontFamily="@font/inter_medium"
-                android:text="Browse Images"
+                android:text="Poster Images"
                 android:textColor="@color/textLight"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -70,5 +56,21 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="70dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="300dp"
+        android:layout_marginBottom="23dp"
+        android:background="@drawable/transparent_background_button"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayoutAdminImages"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.39"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@mipmap/back_ic_launcher_foreground" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

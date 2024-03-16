@@ -48,8 +48,8 @@ public class AdminMainActivity extends AppCompatActivity {
         imagesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(AdminMainActivity.this, AdminBrowseImages.class);
-//                startActivity(intent);
+                Intent intent = new Intent(AdminMainActivity.this, AdminBrowseImages.class);
+                startActivity(intent);
             }
         });
     }

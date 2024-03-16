@@ -35,6 +35,10 @@
         android:theme="@style/Theme.FiftySix"
         tools:targetApi="31">
         <activity
+            android:name=".ImageDisplayActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminBrowseImages"
             android:name=".OrganizerAttendeeDataActivity"
             android:exported="false" />
         <activity
@@ -57,8 +61,7 @@
         <activity
             android:name=".OrganizerHomeActivity"
             android:exported="false" />
-        <activity
-            android:name=".AdminBrowseEvents"/>
+        <activity android:name=".AdminBrowseEvents" />
         <activity
             android:name=".send_notification"
             android:exported="false" />
