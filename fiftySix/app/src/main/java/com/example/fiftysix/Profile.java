@@ -5,10 +5,13 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -54,11 +57,16 @@ public class Profile {
         this.profileRef = db.collection("Profiles");
         this.imageUrl = ("https://ui-avatars.com/api/?rounded=true&name=NA&background=random&size=512");
         this.profileID = profileID;
-        //if(profileInDataBase() != true){
-            addProfileToDatabase();
-       // }
 
-
+        profileRef.document(userID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {}
+                else {
+                    addProfileToDatabase();
+                }
+            }
+        });
     }
 
     public void deleteProfilePic(String userID){
@@ -116,7 +124,7 @@ public class Profile {
         profileData.put("email","unknown");
         profileData.put("phone","unknown");
         profileData.put("bio","unknown");
-
+        profileData.put("profileImageURL",this.imageUrl);
 
 
         // Adds profile to Profiles collection
