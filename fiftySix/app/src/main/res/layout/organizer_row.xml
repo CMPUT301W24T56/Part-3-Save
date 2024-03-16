@@ -26,17 +26,19 @@
         <RelativeLayout
             android:id="@+id/expandable_layout"
             android:layout_width="match_parent"
-            android:layout_height="500dp">
+            android:layout_height="850dp">
 
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/notify"
-                android:layout_width="211dp"
-                android:layout_height="65dp"
+                android:layout_width="384dp"
+                android:layout_height="64dp"
+                android:layout_above="@+id/EditEvent"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="190dp"
-                android:layout_marginBottom="7dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/dark_round_button"
                 android:fontFamily="@font/inter_medium"
                 android:text="Send Notification"
@@ -72,22 +74,22 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:gravity="left|center"
                 android:id="@+id/currentAttendees"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/description"
+                android:gravity="left|center"
                 android:padding="16dp"
                 android:text="Attendees at Event:"
 
                 android:textSize="18sp" />
 
             <TextView
-                android:gravity="left|center"
                 android:id="@+id/attendeeCapacity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/currentAttendees"
+                android:gravity="left|center"
                 android:padding="16dp"
                 android:text="Event Capacity:"
                 android:textSize="18sp" />
@@ -96,35 +98,50 @@
                 android:id="@+id/event_poster_image"
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
-                android:padding="5dp"
-                android:layout_above="@id/uploadQRFromScan"
+                android:layout_above="@+id/attendeeDetails"
                 android:layout_below="@id/attendeeCapacity"
-                android:adjustViewBounds="true"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
+                android:adjustViewBounds="true"
+                android:padding="5dp"
                 android:scaleType="centerCrop"
                 tools:src="@tools:sample/avatars" />
 
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/uploadQRFromScan"
-                android:layout_width="179dp"
-                android:layout_height="61dp"
+                android:id="@+id/EditEvent"
+                android:layout_width="384dp"
+                android:layout_height="64dp"
                 android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginBottom="9dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/dark_round_button"
                 android:fontFamily="@font/inter_medium"
                 android:text="Edit Event"
                 android:textColor="@color/colorPrimaryLight"
                 android:textSize="20sp" />
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/attendeeDetails"
+                android:layout_width="384dp"
+                android:layout_height="64dp"
+                android:layout_above="@+id/notify"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/dark_round_button"
+                android:fontFamily="@font/inter_medium"
+                android:text="Attendees"
+                android:textColor="@color/colorPrimaryLight"
+                android:textSize="20sp" />
+
 
         </RelativeLayout>
-
-
-
 
 
     </LinearLayout>
