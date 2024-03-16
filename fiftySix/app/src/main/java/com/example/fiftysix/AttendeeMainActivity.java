@@ -67,7 +67,7 @@ public class AttendeeMainActivity extends AppCompatActivity {
     private ArrayList<Event> allEventDataList;
     private CollectionReference imageRef;
     private AttendeeMyEventAdapter attendeeMyEventAdapter;
-    private AttendeeMyEventAdapter attendeeAllEventAdapter;
+    private AttendeeAllEventAdapter attendeeAllEventAdapter;
 
 
     // Openening camera
@@ -360,63 +360,68 @@ public class AttendeeMainActivity extends AppCompatActivity {
     private void displayMyEvents(){
         // Adds events from database to the attendee home screen. Will only show events the attendee has signed up for.
 
-
-        attEventRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        eventRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onSuccess(QuerySnapshot querySnapshot) {
-                if(querySnapshot.isEmpty()){
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                attEventRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot querySnapshot) {
+                        if(querySnapshot.isEmpty()){
 
-                }
-                else{
-                    attEventRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot querySnapshots,
-                                            @Nullable FirebaseFirestoreException error) {
-                            if (error != null) {
-                                Log.e("Firestore", error.toString());
-                                return;
-                            }
-                            if (querySnapshots.isEmpty());
-                            else if (querySnapshots != null) {
-                                myEventDataList.clear();
-                                for (QueryDocumentSnapshot doc : querySnapshots) {
-                                    String eventID = doc.getId();
-                                    eventRef.document(eventID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                                            if (error != null) {
-                                                Log.e("Firestore", error.toString());
-                                                return;
-                                            }
-                                            if (querySnapshots != null) {
-                                                String eventName = value.getString("eventName");
-                                                Integer inAttendeeLimit = value.getLong("attendeeLimit").intValue();
-                                                Integer inAttendeeCount = value.getLong("attendeeCount").intValue();
-                                                String imageUrl = value.getString("posterURL");
-                                                String inDate = value.getString("date");
-                                                String location = value.getString("location");
-                                                String details = value.getString("details");
-                                                String posterID = value.getString("posterID");
-                                                db.collection("Images").document(posterID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                                                    @Override
-                                                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                                                        if (value != null) {
-                                                            String imageUrl = value.getString("image");
-                                                            myEventDataList.add(new Event(eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, imageUrl));
-                                                            attendeeMyEventAdapter.notifyDataSetChanged();
-                                                        }
-                                                    }
-                                                });
-                                            }
-                                        }
-                                    });
-                                }
-                            }
                         }
-                    });
-                }
+                        else{
+                            attEventRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable QuerySnapshot querySnapshots,
+                                                    @Nullable FirebaseFirestoreException error) {
+                                    if (error != null) {
+                                        Log.e("Firestore", error.toString());
+                                        return;
+                                    }
+                                    if (querySnapshots.isEmpty());
+                                    else if (querySnapshots != null) {
+                                        myEventDataList.clear();
+                                        for (QueryDocumentSnapshot doc : querySnapshots) {
+                                            String eventID = doc.getId();
+                                            eventRef.document(eventID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                                                    if (error != null) {
+                                                        Log.e("Firestore", error.toString());
+                                                        return;
+                                                    }
+                                                    if (querySnapshots != null) {
+                                                        String eventName = value.getString("eventName");
+                                                        Integer inAttendeeLimit = value.getLong("attendeeLimit").intValue();
+                                                        Integer inAttendeeCount = value.getLong("attendeeCount").intValue();
+                                                        String imageUrl = value.getString("posterURL");
+                                                        String inDate = value.getString("date");
+                                                        String location = value.getString("location");
+                                                        String details = value.getString("details");
+                                                        String posterID = value.getString("posterID");
+                                                        db.collection("PosterImages").document(posterID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                                            @Override
+                                                            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                                                                if (value != null) {
+                                                                    String imageUrl = value.getString("image");
+                                                                    myEventDataList.add(new Event(eventID, eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, imageUrl));
+                                                                    attendeeMyEventAdapter.notifyDataSetChanged();
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
             }
         });
+
 
 
 
@@ -434,6 +439,7 @@ public class AttendeeMainActivity extends AppCompatActivity {
                     allEventDataList.clear();
                     for (QueryDocumentSnapshot doc : value) {
                         if(doc.getId() != "temp") {
+                            String eventID = doc.getId();
                             String eventName = doc.getString("eventName");
                             Integer inAttendeeLimit = doc.getLong("attendeeLimit").intValue();
                             Integer inAttendeeCount = doc.getLong("attendeeCount").intValue();
@@ -443,14 +449,14 @@ public class AttendeeMainActivity extends AppCompatActivity {
                             String details = doc.getString("details");
                             String posterID = doc.getString("posterID");
 
-                            db.collection("Images").document(posterID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                            db.collection("PosterImages").document(posterID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
                                 @Override
                                 public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
 
                                     if (value != null) {
 
                                         String imageUrl = value.getString("image");
-                                        allEventDataList.add(new Event(eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, imageUrl));
+                                        allEventDataList.add(new Event(eventID, eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, imageUrl));
                                         attendeeAllEventAdapter.notifyDataSetChanged();
                                     }
                                 }
@@ -632,7 +638,7 @@ public class AttendeeMainActivity extends AppCompatActivity {
         attendeeMyEventAdapter = new AttendeeMyEventAdapter(myEventDataList);
         recyclerViewMyEvents.setAdapter(attendeeMyEventAdapter);
         recyclerViewMyEvents.setHasFixedSize(false);
-        attendeeAllEventAdapter = new AttendeeMyEventAdapter(allEventDataList);
+        attendeeAllEventAdapter = new AttendeeAllEventAdapter(allEventDataList, getApplicationContext());
         recyclerViewAllEvents.setAdapter(attendeeAllEventAdapter);
         recyclerViewAllEvents.setHasFixedSize(false);
     }

@@ -63,23 +63,19 @@ public class Attendee {
     private CollectionReference ref;
     private String userType = "attendee";
     private String eventID;
-    //private String profileID;
-
-    private Profile profile; // TODO: create and store attendee profile
-
 
     // ________________________________CONSTRUCTORS_____________________________________
 
-
+    /**
+     *  Creates attendee object, if the device ID is not currently in the database linked to an attendee it will be added.
+     * @param mContext: Context current app context
+     */
     public Attendee(Context mContext) {
         this.mContext = mContext;
         this.attendeeID = getDeviceId();
         this.db = FirebaseFirestore.getInstance();
         this.ref = db.collection("Users");
-
-
-        // Adds organizer to data base if the organizer doesn't already exist
-        attendeeExists();
+        attendeeExists(); // Adds organizer to data base if the organizer doesn't already exist
     }
 
 
@@ -87,7 +83,13 @@ public class Attendee {
 
     // ________________________________METHODS_____________________________________
 
-    // Adds check in data to the database
+    /**
+     * Allows the attendee to check into an event. Takes in the QRCode ID, with that ID it fetches what event that qrcode is currently linked to in the database.
+     * It then adds the event ID to a collection inside the user document to keep track of events the user has check into.
+     * It also increments the attendee count in the event document in the database and stores the attendees id in a sub-collection inside the event.
+     * These are used so the organizer can view attendees and track realtime attendance.
+     * @param qRCodeID: String of the QRcode ID that was scanned.
+     */
     public void checkInToEvent(String qRCodeID){
 
         Map<String,Object> attendeeCheckedInEventsData = new HashMap<>();
@@ -95,7 +97,7 @@ public class Attendee {
         //this.ref.document(this.attendeeID).collection("CheckedIntoEvents").document(eventID).set(attendeeCheckedInEventsData);
 
         Map<String,Object> attendeeCheckedInCount = new HashMap<>();
-        attendeeCheckedInCount.put("timesCheckedIn",0);
+        attendeeCheckedInCount.put("timesCheckedIn",1);
 
         //https://firebase.google.com/docs/firestore/query-data/get-data#java_4
         // Use this to fetch specific document.
@@ -127,7 +129,20 @@ public class Attendee {
 
     }
 
-    // Adds event to users upcoming events colletion in firebase.
+
+    public void checkInToEventID(String eventID){
+        Map<String,Object> attendeeCheckedInEventsData = new HashMap<>();
+        attendeeCheckedInEventsData.put("eventDate","tempDate");
+        Map<String,Object> attendeeCheckedInCount = new HashMap<>();
+        attendeeCheckedInCount.put("timesCheckedIn",1);
+
+        ref.document(attendeeID).collection("UpcomingEvents").document(eventID).set(attendeeCheckedInEventsData);
+        db.collection("Events").document(eventID).collection("attendeesAtEvent").document(attendeeID).set(attendeeCheckedInCount);
+
+        db.collection("Events").document(eventID).update("attendeeCount",FieldValue.increment(1));
+    }
+
+
     private void addUpcomingEventToAttendeeDataBase(String eventIDKey){
         Map<String,Object> attendeeUpcomingEventsData = new HashMap<>();
         attendeeUpcomingEventsData.put("eventDate","temp");

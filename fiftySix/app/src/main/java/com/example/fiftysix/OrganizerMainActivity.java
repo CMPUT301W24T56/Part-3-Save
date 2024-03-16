@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import static android.content.ContentValues.TAG;
-import android.widget.ImageView;
+
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -30,19 +30,14 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -58,7 +53,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 public class OrganizerMainActivity extends AppCompatActivity {
 
@@ -312,7 +306,7 @@ public class OrganizerMainActivity extends AppCompatActivity {
             createEvent = (Button) findViewById(R.id.buttonCreateEvent);
             eventDetailsBack = (ImageButton) findViewById(R.id.buttonBackCreateEvent);
             ImageButton eventDetailsBack = (ImageButton) findViewById(R.id.buttonBackUploadQR);
-            uploadQRFromScan = (Button) findViewById(R.id.uploadQRFromScan);
+            uploadQRFromScan = (Button) findViewById(R.id.EditEvent);
             switchAttendeeLimit = findViewById(R.id.switchAttendeeLimit);
             //eventPosterImage = findViewById(R.id.event_poster_image);
 
@@ -451,12 +445,14 @@ public class OrganizerMainActivity extends AppCompatActivity {
                                         Log.d("EVENTNAME", "hello " + eventID);
 
 
-                                        db.collection("Images").whereEqualTo("poster", posterID).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        db.collection("PosterImages").whereEqualTo("poster", posterID).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                             @Override
                                             public void onSuccess(QuerySnapshot querySnapshotImage) {
                                                 for (QueryDocumentSnapshot doc : querySnapshotImage){
+
+                                                    Log.d("Added to list", "onSuccess: Event has been added to eventDataList, OrganizerMain");
                                                     String posterURL = doc.getString("image");
-                                                    eventDataList.add(new Event(eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, posterURL));
+                                                    eventDataList.add(new Event(eventID, eventName, location, inDate, details, inAttendeeCount, inAttendeeLimit, posterURL));
                                                     organizerEventAdapter.notifyDataSetChanged();
                                                 }
 

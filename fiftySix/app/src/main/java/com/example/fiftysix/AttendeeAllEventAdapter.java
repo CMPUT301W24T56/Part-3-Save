@@ -1,10 +1,6 @@
 package com.example.fiftysix;
 
-import static androidx.databinding.DataBindingUtil.setContentView;
-
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,21 +18,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAdapter.EventVH> {
+public class AttendeeAllEventAdapter extends RecyclerView.Adapter<AttendeeAllEventAdapter.EventVH> {
 
     List<Event> eventList;
-    private Context context;
+    Context mContext;
 
-    public OrganizerEventAdapter(ArrayList<Event> eventList, Context context) {
+    public AttendeeAllEventAdapter(ArrayList<Event> eventList, Context mContext) {
         this.eventList = eventList;
-        this.context = context;
+        this.mContext = mContext;
     }
-
 
     @NonNull
     @Override
     public EventVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.organizer_row, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.attendee_all_events_row, parent, false);
         return new EventVH(view);
     }
 
@@ -49,7 +44,6 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
         holder.apiLevelTxt.setText(event.getDate());
         holder.descriptionTxt.setText(event.getDetails());
 
-
         if(event.getAttendeeLimit() == 2147483647){
             holder.descriptionEvent.setText("Capacity: Unlimited");
         }
@@ -58,7 +52,6 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
         }
 
         holder.attendeeCount.setText("Current Attendees: " + event.getAttendeeCount().toString());
-
 
 
         String imageUrl = event.getPosterURL();
@@ -86,7 +79,7 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
         LinearLayout linearLayout;
         RelativeLayout expandableLayout;
         ImageView eventImage;
-        Button send_notification, edit_event, attendees;
+        Button signupEvents;
 
         public EventVH(@NonNull View itemView) {
             super(itemView);
@@ -102,9 +95,8 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
             expandableLayout = itemView.findViewById(R.id.expandable_layout);
 
             eventImage = itemView.findViewById(R.id.event_poster_image);
-            send_notification = itemView.findViewById(R.id.notify);
-            attendees = itemView.findViewById(R.id.attendeeDetails);
-            edit_event = itemView.findViewById(R.id.EditEvent);
+            signupEvents = itemView.findViewById(R.id.SignupEvents);
+
 
             linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -113,33 +105,21 @@ public class OrganizerEventAdapter extends RecyclerView.Adapter<OrganizerEventAd
                     Event event = eventList.get(getAdapterPosition());
                     event.setExpandable(!event.getExpandable());
                     notifyItemChanged(getAdapterPosition());
+
                 }
             });
 
-            send_notification.setOnClickListener(new View.OnClickListener() {
+
+            signupEvents.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, send_notification.class); // Assuming SendNotificationActivity is your activity name
-                    Log.d("TAG", "onClick: working now ");
-                    context.startActivity(intent);
+                    Attendee attendee = new Attendee(mContext);
+                    Event event = eventList.get(getAdapterPosition());
+                    attendee.checkInToEventID(event.getEventID());
                 }
             });
 
-            edit_event.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // TODO: Let organizer edit event Details
-                }
-            });
 
-            attendees.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // TODO: Let organizer edit event Details
-                    Intent intent2 = new Intent(context, OrganizerAttendeeDataActivity.class);
-                    context.startActivity(intent2);
-                }
-            });
 
 
         }

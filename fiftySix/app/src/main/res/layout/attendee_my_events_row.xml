@@ -26,7 +26,7 @@
         <RelativeLayout
             android:id="@+id/expandable_layout"
             android:layout_width="match_parent"
-            android:layout_height="500dp">
+            android:layout_height="675dp">
 
 
             <TextView
@@ -58,21 +58,21 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:gravity="left|center"
                 android:id="@+id/currentAttendees"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/description"
+                android:gravity="left|center"
                 android:padding="16dp"
                 android:text="Attendees at Event:"
                 android:textSize="18sp" />
 
             <TextView
-                android:gravity="left|center"
                 android:id="@+id/attendeeCapacity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/currentAttendees"
+                android:gravity="left|center"
                 android:padding="16dp"
                 android:text="Event Capacity:"
 
@@ -82,12 +82,12 @@
                 android:id="@+id/event_poster_image"
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
-                android:padding="5dp"
                 android:layout_above="@id/browseAllEvents"
                 android:layout_below="@id/attendeeCapacity"
-                android:adjustViewBounds="true"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
+                android:adjustViewBounds="true"
+                android:padding="5dp"
                 android:scaleType="centerCrop"
                 tools:src="@tools:sample/avatars" />
 
@@ -102,7 +102,7 @@
                 android:layout_marginBottom="6dp"
                 android:background="@drawable/dark_round_button"
                 android:fontFamily="@font/inter_medium"
-                android:text="Browse Events"
+                android:text="Leave Event"
                 android:textColor="@color/colorPrimaryLight"
                 android:textSize="20sp" />
 
